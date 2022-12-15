@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31903.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.Domain", "src\OneBeyond.Studio.EmailProviders.Domain\OneBeyond.Studio.EmailProviders.Domain.csproj", "{AA084DC2-F3C4-4444-9DFE-502CF8F1595F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.Folder", "src\OneBeyond.Studio.EmailProviders.Folder\OneBeyond.Studio.EmailProviders.Folder.csproj", "{B3CEEB48-0613-41A7-B3E6-73E86751D99C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.Exchange", "src\OneBeyond.Studio.EmailProviders.Exchange\OneBeyond.Studio.EmailProviders.Exchange.csproj", "{D7F440E5-F7A4-423D-AC83-4BB1D933DF1B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.Office365", "src\OneBeyond.Studio.EmailProviders.Office365\OneBeyond.Studio.EmailProviders.Office365.csproj", "{4DC4D987-0404-4960-B7BD-57AF850124AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.SendGrid", "src\OneBeyond.Studio.EmailProviders.SendGrid\OneBeyond.Studio.EmailProviders.SendGrid.csproj", "{3D0782B3-45F3-49CD-9170-E5408EF48DE3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.Smtp", "src\OneBeyond.Studio.EmailProviders.Smtp\OneBeyond.Studio.EmailProviders.Smtp.csproj", "{4BB0811D-EF79-4A59-A9D4-D129008813E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.Graph", "src\OneBeyond.Studio.EmailProviders.Graph\OneBeyond.Studio.EmailProviders.Graph.csproj", "{5DB927C8-BF08-4683-B351-C5DA2C91C090}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA30F4FD-524A-44DD-818A-DA3587B76BE7}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA084DC2-F3C4-4444-9DFE-502CF8F1595F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA084DC2-F3C4-4444-9DFE-502CF8F1595F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA084DC2-F3C4-4444-9DFE-502CF8F1595F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA084DC2-F3C4-4444-9DFE-502CF8F1595F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3CEEB48-0613-41A7-B3E6-73E86751D99C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3CEEB48-0613-41A7-B3E6-73E86751D99C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3CEEB48-0613-41A7-B3E6-73E86751D99C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3CEEB48-0613-41A7-B3E6-73E86751D99C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7F440E5-F7A4-423D-AC83-4BB1D933DF1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7F440E5-F7A4-423D-AC83-4BB1D933DF1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7F440E5-F7A4-423D-AC83-4BB1D933DF1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7F440E5-F7A4-423D-AC83-4BB1D933DF1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC4D987-0404-4960-B7BD-57AF850124AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC4D987-0404-4960-B7BD-57AF850124AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC4D987-0404-4960-B7BD-57AF850124AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC4D987-0404-4960-B7BD-57AF850124AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D0782B3-45F3-49CD-9170-E5408EF48DE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D0782B3-45F3-49CD-9170-E5408EF48DE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D0782B3-45F3-49CD-9170-E5408EF48DE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D0782B3-45F3-49CD-9170-E5408EF48DE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BB0811D-EF79-4A59-A9D4-D129008813E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB0811D-EF79-4A59-A9D4-D129008813E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BB0811D-EF79-4A59-A9D4-D129008813E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB0811D-EF79-4A59-A9D4-D129008813E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB927C8-BF08-4683-B351-C5DA2C91C090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB927C8-BF08-4683-B351-C5DA2C91C090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB927C8-BF08-4683-B351-C5DA2C91C090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB927C8-BF08-4683-B351-C5DA2C91C090}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {891600D6-5882-472E-91CA-514661CD2F2D}
+	EndGlobalSection
+EndGlobal

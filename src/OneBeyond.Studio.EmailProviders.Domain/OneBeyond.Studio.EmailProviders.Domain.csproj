@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>        
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <Description>Interface and extensions for email providers</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ensure.That" Version="10.1.0" />
+  </ItemGroup>
+
+</Project>
