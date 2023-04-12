@@ -5,10 +5,13 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Azure.Identity;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
+using Microsoft.Graph.Models;
+using Microsoft.Graph.Users.Item.SendMail;
 using OneBeyond.Studio.EmailProviders.Domain;
 using OneBeyond.Studio.EmailProviders.Domain.Exceptions;
 
@@ -67,31 +70,21 @@ internal sealed class EmailSender : IEmailSender
 
             ToRecipients = GetRecipientsList(mailMessage.To),
             BccRecipients = GetRecipientsList(mailMessage.Bcc),
-            CcRecipients = GetRecipientsList(mailMessage.CC)
+            CcRecipients = GetRecipientsList(mailMessage.CC),
+            Attachments = GetAttachmentsList(mailMessage.Attachments),
         };
-
-        foreach (var attachment in mailMessage.Attachments)
-        {
-            using (var br = new BinaryReader(attachment.ContentStream))
-            {
-                var b = br.ReadBytes((int)attachment.ContentStream.Length);
-                message.Attachments.Add(new FileAttachment()
-                {
-                    Name = attachment.Name,
-                    ContentBytes = b,
-                    IsInline = !string.IsNullOrEmpty(attachment.ContentId), //inline is used to display images within an e-mail's body
-                    ContentId = attachment.ContentId,
-                    ContentType = attachment.ContentType.MediaType
-                });
-            }
-        }
 
         try
         {
             await _graphServiceClient.Value.Users[_senderUserAzureId]
-                .SendMail(message, false)
-                .Request()
-                .PostAsync(cancellationToken).ConfigureAwait(false);
+                .SendMail
+                .PostAsync(
+                    new SendMailPostRequestBody 
+                    { 
+                        Message = message, 
+                        SaveToSentItems = false 
+                    }, 
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -104,7 +97,37 @@ internal sealed class EmailSender : IEmailSender
         }
     }
 
-    private static IEnumerable<Recipient> GetRecipientsList(MailAddressCollection mailAddresses)
+    private List<Microsoft.Graph.Models.Attachment>? GetAttachmentsList(AttachmentCollection attachments) 
+    {
+        if (!attachments.Any())
+        {
+            return null;
+        }
+
+        var attachmentsList = new List<Microsoft.Graph.Models.Attachment>();
+
+        foreach (var attachment in attachments)
+        {
+            using (var br = new BinaryReader(attachment.ContentStream))
+            {
+                var b = br.ReadBytes((int)attachment.ContentStream.Length);
+
+                attachmentsList.Add(
+                    new FileAttachment
+                    {
+                        Name = attachment.Name,
+                        ContentBytes = b,
+                        IsInline = !string.IsNullOrEmpty(attachment.ContentId), //inline is used to display images within an e-mail's body
+                        ContentId = attachment.ContentId,
+                        ContentType = attachment.ContentType.MediaType
+                    });
+            }
+        }
+
+        return attachmentsList;
+    }
+
+    private static List<Recipient> GetRecipientsList(MailAddressCollection mailAddresses)
         => mailAddresses.Select(recipient =>
                     new Recipient
                     {
@@ -113,5 +136,5 @@ internal sealed class EmailSender : IEmailSender
                             Address = recipient.Address,
                             Name = recipient.DisplayName
                         }
-                    });
+                    }).ToList();
 }
