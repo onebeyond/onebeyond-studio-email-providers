@@ -52,6 +52,8 @@ internal sealed class EmailSender : IEmailSender
         _senderUserAzureId = senderUserAzureId;
     }
 
+    //Note! If you use this provider, please make sure the application registration you're using
+    //has the API Permission (Type: Application) to Microsoft Graph : Mail.Send
     public async Task SendEmailAsync(
         MailMessage mailMessage,
         CancellationToken cancellationToken = default)
@@ -76,7 +78,8 @@ internal sealed class EmailSender : IEmailSender
 
         try
         {
-            await _graphServiceClient.Value.Users[_senderUserAzureId]
+            await _graphServiceClient.Value
+                .Users[_senderUserAzureId]
                 .SendMail
                 .PostAsync(
                     new SendMailPostRequestBody 
