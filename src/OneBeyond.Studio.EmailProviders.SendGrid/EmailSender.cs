@@ -16,10 +16,6 @@ internal sealed class EmailSender : IEmailSender
     private readonly string _sendGridApiKey;
     private readonly string? _enforcedToEmailAddress;
 
-    /// <summary>Create an object to Handle Sending e-mail using Sendgrid service</summary>
-    /// <param name="sendGridApiKey"></param>
-    /// <param name="fromEmail"></param>
-    /// <param name="fromEmailName"></param>
     public EmailSender(
         string sendGridApiKey,
         string fromEmail,
@@ -39,7 +35,9 @@ internal sealed class EmailSender : IEmailSender
 
     public async Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
-        EnsureArg.IsNotNull(mailMessage);
+        //TODO STRANGE WE DO NOT HAVE ANY TRY CATCH HERE
+        EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
+
         if (mailMessage.ReplyToList.Count > 1)
         {
             throw new EmailSenderException("SendGrid does not support more than one replyTo address.");
@@ -62,6 +60,7 @@ internal sealed class EmailSender : IEmailSender
                 mailMessage.From.Address, mailMessage.From.DisplayName);
         }
 
+        //TODO I DID NOT UNDERSTAND THIS CODE
         if (!string.IsNullOrEmpty(_enforcedToEmailAddress))
         {
             mailMessage.To.Clear();
