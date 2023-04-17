@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
                 return new EmailSender(
                         serviceProvider.GetRequiredService<ILoggerFactory>(),
                         emailSenderOptions.CommunicationServiceConnectionString,
-                        emailSenderOptions.FromEmailAddress,
+                        emailSenderOptions.FromEmailAddress!,
                         emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null) as IEmailSender;
             });
         return @this;
