@@ -1,11 +1,8 @@
 using System.Net.Mail;
-using System.Threading;
-using System.Threading.Tasks;
 using Azure.Communication.Email;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 using OneBeyond.Studio.EmailProviders.Domain;
-using OneBeyond.Studio.EmailProviders.Domain.Exceptions;
 
 namespace OneBeyond.Studio.EmailProviders.AzureCommService;
 
@@ -37,8 +34,6 @@ internal sealed class EmailSender : IEmailSender
 
     public async Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
-        //TODO STRANGE WE DO NOT HAVE ANY TRY CATCH HERE
-
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
         var fromAddress = mailMessage.From?.Address ?? _defaultFromAddress;
@@ -75,25 +70,24 @@ internal sealed class EmailSender : IEmailSender
 
         foreach (var attachment in mailMessage.Attachments)
         {
-            //TODO ATTACHMENTS
-            //emailMessage.Attachments.Add(
-            //    new EmailAttachment(
-            //        attachment.Name,
-            //        attachment.ContentType.MediaType, new BinaryData(
-            //        attachment.ContentStream));
+            // Read the attachment file into a byte array
+            byte[] attachmentBytes;
+            using (var ms = new MemoryStream())
+            {
+                await attachment.ContentStream.CopyToAsync(ms);
+                attachmentBytes = ms.ToArray();
+            }
 
-            //TODO LOOKS LIKE AZURE DOES NOT SUPPORT INLINE IMAGES:
-            //await sendGridMessage.AddAttachmentAsync(
-            //---------> HERE    disposition: string.IsNullOrEmpty(attachment.ContentId) ? "attachment" : "inline", //inline is used to display images within an e-mail's body)
-            //-----> AND HERE    content_id: attachment.ContentId,
-            //    cancellationToken: cancellationToken);
+            emailMessage.Attachments.Add(
+                new EmailAttachment(
+                    attachment.Name,
+                    attachment.ContentType.MediaType,
+                    new BinaryData(attachmentBytes)));
         }
 
-        EmailSendOperation emailSendOperation = await _emailClient.SendAsync(
-        Azure.WaitUntil.Completed, //TODO DOES IT HAVE TO BE CONFIGURABLE?
+        await _emailClient.SendAsync(
+            Azure.WaitUntil.Completed, 
             emailMessage,
             cancellationToken);
-
-        //TODO ANALYSE EmailSendOperation
     }
 }

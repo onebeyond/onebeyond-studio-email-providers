@@ -1,5 +1,4 @@
 using System.Net.Mail;
-using System.Runtime.CompilerServices;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +38,8 @@ using (var serviceScope = serviceProvider.CreateScope())
 
     await SendPleinTextEmailAsync(emailSender);
     await SendHtmlEmailAsync(emailSender);
+    await SendForcedToEmailAsync(emailSender);
+    await SendAttachmentsEmailAsync(emailSender);
 }
 
 static async Task SendPleinTextEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
@@ -61,6 +62,32 @@ static async Task SendHtmlEmailAsync(IEmailSender emailSender, CancellationToken
         Body = "<h1>Test message</h1>",
         IsBodyHtml = true
     };
+
+    await emailSender.SendEmailAsync(mail, ct);
+}
+
+static async Task SendForcedToEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+{
+    var mail = new MailMessage(_defaultFromEmail, "unknown.address@nowhere.com")
+    {
+        Subject = "Test",
+        Body = "Test message",
+        IsBodyHtml = true
+    };
+
+    await emailSender.SendEmailAsync(mail, ct);
+}
+
+static async Task SendAttachmentsEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+{
+    var mail = new MailMessage(_defaultFromEmail, _defaultToEmail)
+    {
+        Subject = "Test with attachment",
+        Body = "Test message with Attachment",
+        IsBodyHtml = false
+    };
+
+    mail.Attachments.Add(new Attachment("Attachments/attachment.png", "image/png"));
 
     await emailSender.SendEmailAsync(mail, ct);
 }
