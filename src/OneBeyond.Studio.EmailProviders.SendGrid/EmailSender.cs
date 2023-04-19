@@ -49,10 +49,10 @@ internal sealed class EmailSender : IEmailSender
         //map mail message to send grid message
         var sendGridMessage = new SendGridMessage()
         {
-            From = GetMailSender(mailMessage.From, _defaultSender)
+            From = GetSender(mailMessage.From, _defaultSender)
         };
 
-        foreach (var to in GetMailRecipients(mailMessage.To, _enforcedToEmailAddress))
+        foreach (var to in GetRecipients(mailMessage.To, _enforcedToEmailAddress))
         {
             sendGridMessage.AddTo(to);
         }
@@ -111,12 +111,12 @@ internal sealed class EmailSender : IEmailSender
         await SendEmailMessageAsync(sendGridMessage, cancellationToken);
     }
 
-    private static EmailAddress GetMailSender(MailAddress? sender, EmailAddress defaultSender)
+    private static EmailAddress GetSender(MailAddress? sender, EmailAddress defaultSender)
         => sender is { }
             ? sender.ToEmailAddress()
             : defaultSender;
 
-    private static List<EmailAddress> GetMailRecipients(MailAddressCollection recipients, string? enforcedToEmailAddress)
+    private static List<EmailAddress> GetRecipients(MailAddressCollection recipients, string? enforcedToEmailAddress)
         => string.IsNullOrEmpty(enforcedToEmailAddress)
             ? recipients.Select(recipient => recipient.ToEmailAddress()).ToList()
             : new List<EmailAddress> { new EmailAddress(enforcedToEmailAddress!) };
