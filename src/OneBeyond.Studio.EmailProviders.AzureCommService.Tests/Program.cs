@@ -40,6 +40,21 @@ using (var serviceScope = serviceProvider.CreateScope())
     await SendHtmlEmailAsync(emailSender);
     await SendForcedToEmailAsync(emailSender);
     await SendAttachmentsEmailAsync(emailSender);
+    await SendMultipleEmailsAsync(emailSender);
+}
+
+static async Task SendMultipleEmailsAsync(IEmailSender emailSender, CancellationToken ct = default)
+{
+    for (var i = 0; i < 100; i++)
+    {
+        var mail = new MailMessage(_defaultFromEmail, _defaultToEmail)
+        {
+            Subject = $"Test {i}",
+            Body = $"Test message {i}"
+        };
+
+        await emailSender.SendEmailAsync(mail, ct);
+    }
 }
 
 static async Task SendPleinTextEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
