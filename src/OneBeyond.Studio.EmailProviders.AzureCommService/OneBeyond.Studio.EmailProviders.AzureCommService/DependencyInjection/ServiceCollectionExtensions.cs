@@ -1,9 +1,7 @@
-using System;
 using EnsureThat;
 using Microsoft.Extensions.DependencyInjection;
-using OneBeyond.Studio.EmailProviders.Domain;
 using OneBeyond.Studio.EmailProviders.AzureCommService.Options;
-using Microsoft.Extensions.Logging;
+using OneBeyond.Studio.EmailProviders.Domain;
 
 namespace OneBeyond.Studio.EmailProviders.AzureCommService.DependencyInjection;
 
@@ -15,13 +13,13 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(emailSenderOptions, nameof(emailSenderOptions));
 
         @this.AddSingleton(
-            (serviceProvider) =>
+            (_) =>
             {
                 return new EmailSender(
-                        serviceProvider.GetRequiredService<ILoggerFactory>(),
                         emailSenderOptions.CommunicationServiceConnectionString,
                         emailSenderOptions.FromEmailAddress!,
-                        emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null) as IEmailSender;
+                        emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null,
+                        emailSenderOptions.DoNotWaitTillOperationCompleted) as IEmailSender;
             });
         return @this;
     }

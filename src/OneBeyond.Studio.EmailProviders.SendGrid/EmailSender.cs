@@ -32,7 +32,7 @@ internal sealed class EmailSender : IEmailSender
         _enforcedToEmailAddress = enforcedToEmailAddress;
     }
 
-    public async Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
+    public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
@@ -108,7 +108,14 @@ internal sealed class EmailSender : IEmailSender
                 cancellationToken: cancellationToken);
         }
 
-        await SendEmailMessageAsync(sendGridMessage, cancellationToken);
+        return await SendEmailMessageAsync(sendGridMessage, cancellationToken);
+    }
+
+    private async Task<string?> SendEmailMessageAsync(SendGridMessage sendGridMessage, CancellationToken cancellationToken)
+    {
+        var client = new SendGridClient(_sendGridApiKey);
+        var response = await client.SendEmailAsync(sendGridMessage, cancellationToken);
+        return response.Headers.GetValues("X-Message-Id").FirstOrDefault();
     }
 
     private static EmailAddress GetSender(MailAddress? sender, EmailAddress defaultSender)
@@ -120,10 +127,4 @@ internal sealed class EmailSender : IEmailSender
         => string.IsNullOrEmpty(enforcedToEmailAddress)
             ? recipients.Select(recipient => recipient.ToEmailAddress()).ToList()
             : new List<EmailAddress> { new EmailAddress(enforcedToEmailAddress!) };
-
-    private Task SendEmailMessageAsync(SendGridMessage sendGridMessage, CancellationToken cancellationToken)
-    {
-        var client = new SendGridClient(_sendGridApiKey);
-        return client.SendEmailAsync(sendGridMessage, cancellationToken);
-    }
 }

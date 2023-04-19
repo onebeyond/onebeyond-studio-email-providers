@@ -26,21 +26,20 @@ internal sealed class EmailSender : IEmailSender
     private readonly bool _enableSsl;
 
     /// <summary>Create an object to Handle Sending e-mail using Office365 service</summary>
-    public EmailSender(ExchangeVersion exchangeVersion,
-                            string username,
-                            string password,
-                            string fromEmail,
-                            string fromEmailName,
-                            string? enforcedToEmailAddress,
-                            string deliveryMethod,
-                            bool saveCopy,
-                            string? saveCopyFolderId,
-                            int port,
-                            string host,
-                            bool enableSsl)
+    public EmailSender(
+        ExchangeVersion exchangeVersion,
+        string username,
+        string password,
+        string fromEmail,
+        string fromEmailName,
+        string? enforcedToEmailAddress,
+        string deliveryMethod,
+        bool saveCopy,
+        string? saveCopyFolderId,
+        int port,
+        string host,
+        bool enableSsl)
     {
-
-
         EnsureArg.IsNotNullOrWhiteSpace(username, nameof(username));
         EnsureArg.IsNotNullOrWhiteSpace(password, nameof(password));
         EnsureArg.IsNotNullOrWhiteSpace(fromEmail, nameof(fromEmail));
@@ -69,7 +68,7 @@ internal sealed class EmailSender : IEmailSender
         _enableSsl = enableSsl;
     }
 
-    public System.Threading.Tasks.Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
+    public System.Threading.Tasks.Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(mailMessage);
 
@@ -81,15 +80,18 @@ internal sealed class EmailSender : IEmailSender
 
         if (_deliveryMethod == DeliveryMethod.Smtp)
         {
-            return SendMailMessageAsync(mailMessage);
+            return SendMailMessageAsync(mailMessage, cancellationToken);
         }
 
-        return _deliveryMethod == DeliveryMethod.EWS
-            ? SendEWSMailMessageAsync(mailMessage)
-            : throw new EmailSenderException($"Delivery Method '{_deliveryMethod}' is not supported.");
+        if (_deliveryMethod == DeliveryMethod.EWS)
+        {
+            return SendEWSMailMessageAsync(mailMessage);
+        }
+
+        throw new EmailSenderException($"Delivery Method '{_deliveryMethod}' is not supported.");
     }
 
-    private System.Threading.Tasks.Task SendEWSMailMessageAsync(MailMessage mailMessage)
+    private System.Threading.Tasks.Task<string?> SendEWSMailMessageAsync(MailMessage mailMessage)
     {
         if (mailMessage.AlternateViews.Count > 0)
         {
@@ -161,26 +163,38 @@ internal sealed class EmailSender : IEmailSender
         return SendMailMessageAsync(emailMessage);
     }
 
-    private System.Threading.Tasks.Task SendMailMessageAsync(MailMessage mailMessage)
+    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(MailMessage mailMessage, CancellationToken cancellationToken)
     {
-        using (var smtpClient = new SmtpClient())
+        using (var smtpClient = new SmtpClient()
         {
-            smtpClient.Credentials = new NetworkCredential(_username, _password);
-            smtpClient.Port = _port;
-            smtpClient.Host = _host;
-            smtpClient.EnableSsl = _enableSsl;
-            return smtpClient.SendMailAsync(mailMessage);
+            Credentials = new NetworkCredential(_username, _password),
+            Port = _port,
+            Host = _host, 
+            EnableSsl = _enableSsl
+        })
+        {
+            await smtpClient.SendMailAsync(mailMessage, cancellationToken);
         }
+
+        return null; //We do not support correlation Id for SmtpClient
     }
 
-    private System.Threading.Tasks.Task SendMailMessageAsync(EmailMessage emailMessage)
+    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(EmailMessage emailMessage)
     {
-        return _saveCopy
-            ? !string.IsNullOrWhiteSpace(_saveCopyFolderId)
-                ? emailMessage.SendAndSaveCopy(new FolderId(_saveCopyFolderId))
-                : emailMessage.SendAndSaveCopy()
-            : emailMessage.Send();
+        if (_saveCopy)
+        {
+            var folderId = !string.IsNullOrWhiteSpace(_saveCopyFolderId)
+                ? new FolderId(_saveCopyFolderId)
+                : new FolderId(WellKnownFolderName.SentItems);
 
+            await emailMessage.SendAndSaveCopy(folderId);
+        }
+        else
+        {
+            await emailMessage.Send();
+        }
+
+        return null; //We do not support correlation Id for this email sender
     }
 
     private EmailMessage CreateExchangeEmail()

@@ -9,4 +9,9 @@ public sealed record EmailSenderOptions : Domain.Options.EmailSenderOptions
     /// Azure communication service connection string
     /// </summary>
     public string CommunicationServiceConnectionString { get; init; } = default!;
+    /// <summary>
+    /// When DoNotWaitTillOperationCompleted is true, we just pass the e-mail to communication services and do not wait till the e-mail is acutally sent.
+    /// When DoNotWaitTillOperationCompleted is false, we do wait till the e-mail is acutally sent (takes longer).
+    /// </summary>
+    public bool DoNotWaitTillOperationCompleted { get; init; }
 }

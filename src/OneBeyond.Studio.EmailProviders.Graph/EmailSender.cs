@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Azure.Identity;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
@@ -54,7 +53,7 @@ internal sealed class EmailSender : IEmailSender
 
     //Note! If you use this provider, please make sure the application registration you're using
     //has the API Permission (Type: Application) to Microsoft Graph : Mail.Send
-    public async Task SendEmailAsync(
+    public async Task<string?> SendEmailAsync(
         MailMessage mailMessage,
         CancellationToken cancellationToken = default)
     {
@@ -73,7 +72,7 @@ internal sealed class EmailSender : IEmailSender
             ToRecipients = GetRecipientsList(mailMessage.To),
             BccRecipients = GetRecipientsList(mailMessage.Bcc),
             CcRecipients = GetRecipientsList(mailMessage.CC),
-            Attachments = GetAttachmentsList(mailMessage.Attachments),
+            Attachments = GetAttachmentsList(mailMessage.Attachments)
         };
 
         try
@@ -85,9 +84,11 @@ internal sealed class EmailSender : IEmailSender
                     new SendMailPostRequestBody 
                     { 
                         Message = message, 
-                        SaveToSentItems = false 
+                        SaveToSentItems = false
                     }, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            return null; // We do not support correlation Id for this Email Sender
         }
         catch (Exception exception)
         {

@@ -7,12 +7,12 @@ namespace OneBeyond.Studio.EmailProviders.Domain;
 public interface IEmailSender
 {
     /// <summary>
-    /// Email sender
+    /// Send e-mail
     /// </summary>
-    /// <param name="mailMessage"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task SendEmailAsync(
+    /// <param name="mailMessage">E-mail to be sent</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Correlation Id of the e-mail in the external system</returns>
+    Task<string?> SendEmailAsync(
         MailMessage mailMessage,
         CancellationToken cancellationToken = default);
 }
