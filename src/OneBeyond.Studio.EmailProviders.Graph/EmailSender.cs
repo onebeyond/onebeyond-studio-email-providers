@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Azure.Identity;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
@@ -60,6 +59,8 @@ internal sealed class EmailSender : IEmailSender
     {
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
+        var correlationId = Guid.NewGuid().ToString();
+
         var message = new Message
         {
             Subject = mailMessage.Subject,
@@ -74,6 +75,10 @@ internal sealed class EmailSender : IEmailSender
             BccRecipients = GetRecipientsList(mailMessage.Bcc),
             CcRecipients = GetRecipientsList(mailMessage.CC),
             Attachments = GetAttachmentsList(mailMessage.Attachments),
+            AdditionalData = new Dictionary<string, object>
+                {
+                    {"X-Correlation-Id", correlationId}
+                }
         };
 
         try
@@ -88,6 +93,8 @@ internal sealed class EmailSender : IEmailSender
                         SaveToSentItems = false
                     }, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            return correlationId;
         }
         catch (Exception exception)
         {
