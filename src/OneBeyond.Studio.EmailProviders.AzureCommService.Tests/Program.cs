@@ -36,7 +36,7 @@ using (var serviceScope = serviceProvider.CreateScope())
 {
     var emailSender = serviceScope.ServiceProvider.GetRequiredService<IEmailSender>();
 
-    await SendPleinTextEmailAsync(emailSender);
+    await SendPlainTextEmailAsync(emailSender);
     await SendHtmlEmailAsync(emailSender);
     await SendForcedToEmailAsync(emailSender);
     await SendAttachmentsEmailAsync(emailSender);
@@ -57,7 +57,7 @@ static async Task SendMultipleEmailsAsync(IEmailSender emailSender, Cancellation
     }
 }
 
-static async Task SendPleinTextEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+static async Task SendPlainTextEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
 {
     var mail = new MailMessage(_defaultFromEmail, _defaultToEmail)
     {
