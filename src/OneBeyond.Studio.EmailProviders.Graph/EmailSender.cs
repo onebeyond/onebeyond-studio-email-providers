@@ -54,7 +54,7 @@ internal sealed class EmailSender : IEmailSender
 
     //Note! If you use this provider, please make sure the application registration you're using
     //has the API Permission (Type: Application) to Microsoft Graph : Mail.Send
-    public async Task SendEmailAsync(
+    public async Task<string?> SendEmailAsync(
         MailMessage mailMessage,
         CancellationToken cancellationToken = default)
     {

@@ -28,12 +28,11 @@ internal sealed class EmailSender : IEmailSender
         _enforcedToEmailAddress = enforcedToEmailAddress;
     }
 
-    public Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken)
+    public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
-        if (mailMessage.From is null
-            && _fromEmailAddress is { })
+        if (mailMessage.From is null && _fromEmailAddress is { })
         {
             mailMessage.From = new MailAddress(_fromEmailAddress, _fromEmailName ?? _fromEmailAddress);
         }
@@ -46,6 +45,10 @@ internal sealed class EmailSender : IEmailSender
 
         var mimeMessage = (MimeMessage)mailMessage;
 
-        return mimeMessage.WriteToAsync($"{_folder}/{Guid.NewGuid()}.eml", cancellationToken);
+        var correlationId = Guid.NewGuid().ToString();
+
+        await mimeMessage.WriteToAsync($"{_folder}/{correlationId}.eml", cancellationToken);
+
+        return correlationId;
     }
 }

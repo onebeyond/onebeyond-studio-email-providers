@@ -8,31 +8,29 @@ namespace OneBeyond.Studio.EmailProviders.AzureCommService;
 
 internal sealed class EmailSender : IEmailSender
 {
-    private readonly ILogger _logger;
-
     private readonly string _defaultFromAddress;
     private readonly string? _enforcedToEmailAddress;
     private readonly EmailClient _emailClient;
+    private readonly Azure.WaitUntil _waitUntil;
 
     /// <summary>Create an object to Handle Sending e-mail using Sendgrid service</summary>
     /// <param name="connectionString">Azure Communication service connection string</param>
     public EmailSender(
-        ILoggerFactory loggerFactory,
         string connectionString,
         string defaultFromAddress,
-        string? enforcedToEmailAddress)
+        string? enforcedToEmailAddress,
+        bool doNotWaitTillOperationCompleted)
     {
-        EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
         EnsureArg.IsNotNullOrWhiteSpace(connectionString, nameof(connectionString));
         EnsureArg.IsNotNullOrWhiteSpace(defaultFromAddress, nameof(defaultFromAddress));
 
-        _logger = loggerFactory.CreateLogger<EmailSender>();
         _defaultFromAddress = defaultFromAddress;
         _enforcedToEmailAddress = enforcedToEmailAddress;
         _emailClient = new EmailClient(connectionString);
+        _waitUntil = doNotWaitTillOperationCompleted ? Azure.WaitUntil.Started : Azure.WaitUntil.Completed;
     }
 
-    public async Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
+    public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
@@ -85,9 +83,12 @@ internal sealed class EmailSender : IEmailSender
                     new BinaryData(attachmentBytes)));
         }
 
-        await _emailClient.SendAsync(
-            Azure.WaitUntil.Completed, 
+        var response = await _emailClient.SendAsync(
+            _waitUntil, 
             emailMessage,
             cancellationToken);
+
+        //That's the correlation Id that can be used to query / poll Azure communication services to provide more info about the e-mail being sent
+        return response.Id; 
     }
 }
