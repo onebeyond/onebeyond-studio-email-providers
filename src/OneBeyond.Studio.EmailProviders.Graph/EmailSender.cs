@@ -59,8 +59,6 @@ internal sealed class EmailSender : IEmailSender
     {
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
-        var correlationId = Guid.NewGuid().ToString();
-
         var message = new Message
         {
             Subject = mailMessage.Subject,
@@ -74,11 +72,7 @@ internal sealed class EmailSender : IEmailSender
             ToRecipients = GetRecipientsList(mailMessage.To),
             BccRecipients = GetRecipientsList(mailMessage.Bcc),
             CcRecipients = GetRecipientsList(mailMessage.CC),
-            Attachments = GetAttachmentsList(mailMessage.Attachments),
-            AdditionalData = new Dictionary<string, object>
-                {
-                    {"X-Correlation-Id", correlationId}
-                }
+            Attachments = GetAttachmentsList(mailMessage.Attachments)
         };
 
         try
@@ -94,7 +88,7 @@ internal sealed class EmailSender : IEmailSender
                     }, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return correlationId;
+            return null; // We do not support correlation Id for this Email Sender
         }
         catch (Exception exception)
         {

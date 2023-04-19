@@ -55,7 +55,7 @@ internal sealed class EmailSender : IEmailSender
         _saveCopyFolderId = saveCopyFolderId;
     }
 
-    public System.Threading.Tasks.Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
+    public System.Threading.Tasks.Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(mailMessage);
 
@@ -143,12 +143,21 @@ internal sealed class EmailSender : IEmailSender
         return new EmailMessage(exchangeService);
     }
 
-    private System.Threading.Tasks.Task SendMailMessageAsync(EmailMessage emailMessage)
+    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(EmailMessage emailMessage)
     {
-        return _saveCopy
-            ? !string.IsNullOrWhiteSpace(_saveCopyFolderId)
-                ? emailMessage.SendAndSaveCopy(new FolderId(_saveCopyFolderId))
-                : emailMessage.SendAndSaveCopy()
-            : emailMessage.Send();
+        if (_saveCopy)
+        {
+            var folderId = !string.IsNullOrWhiteSpace(_saveCopyFolderId)
+                ? new FolderId(_saveCopyFolderId)
+                : new FolderId(WellKnownFolderName.SentItems);
+
+            await emailMessage.SendAndSaveCopy(folderId);
+        }
+        else
+        {
+            await emailMessage.Send();
+        }
+
+        return null; //We do not support correlation Id for this email sender
     }
 }

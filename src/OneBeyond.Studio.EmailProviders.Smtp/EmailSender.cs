@@ -75,7 +75,7 @@ internal sealed class EmailSender : IEmailSender, IDisposable
         }
     }
 
-    public async Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken)
+    public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(mailMessage);
 
@@ -118,6 +118,8 @@ internal sealed class EmailSender : IEmailSender, IDisposable
         {
             await ReleaseSmtpClientAsync(smtpClient, cancellationToken).ConfigureAwait(false);
         }
+
+        return null; //We do not support correlation Id for SMTP senders
     }
 
     private async Task<(int Id, MailKit.Net.Smtp.SmtpClient Value)> AcquireSmtpClientAsync(CancellationToken cancellationToken)
