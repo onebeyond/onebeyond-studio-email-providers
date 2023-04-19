@@ -26,18 +26,19 @@ internal sealed class EmailSender : IEmailSender
     private readonly bool _enableSsl;
 
     /// <summary>Create an object to Handle Sending e-mail using Office365 service</summary>
-    public EmailSender(ExchangeVersion exchangeVersion,
-                            string username,
-                            string password,
-                            string fromEmail,
-                            string fromEmailName,
-                            string? enforcedToEmailAddress,
-                            string deliveryMethod,
-                            bool saveCopy,
-                            string? saveCopyFolderId,
-                            int port,
-                            string host,
-                            bool enableSsl)
+    public EmailSender(
+        ExchangeVersion exchangeVersion,
+        string username,
+        string password,
+        string fromEmail,
+        string fromEmailName,
+        string? enforcedToEmailAddress,
+        string deliveryMethod,
+        bool saveCopy,
+        string? saveCopyFolderId,
+        int port,
+        string host,
+        bool enableSsl)
     {
         EnsureArg.IsNotNullOrWhiteSpace(username, nameof(username));
         EnsureArg.IsNotNullOrWhiteSpace(password, nameof(password));
@@ -79,7 +80,7 @@ internal sealed class EmailSender : IEmailSender
 
         if (_deliveryMethod == DeliveryMethod.Smtp)
         {
-            return SendMailMessageAsync(mailMessage);
+            return SendMailMessageAsync(mailMessage, cancellationToken);
         }
 
         if (_deliveryMethod == DeliveryMethod.EWS)
@@ -162,7 +163,7 @@ internal sealed class EmailSender : IEmailSender
         return SendMailMessageAsync(emailMessage);
     }
 
-    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(MailMessage mailMessage)
+    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(MailMessage mailMessage, CancellationToken cancellationToken)
     {
         using (var smtpClient = new SmtpClient()
         {
@@ -172,7 +173,7 @@ internal sealed class EmailSender : IEmailSender
             EnableSsl = _enableSsl
         })
         {
-            await smtpClient.SendMailAsync(mailMessage);
+            await smtpClient.SendMailAsync(mailMessage, cancellationToken);
         }
 
         return null; //We do not support correlation Id for SmtpClient
