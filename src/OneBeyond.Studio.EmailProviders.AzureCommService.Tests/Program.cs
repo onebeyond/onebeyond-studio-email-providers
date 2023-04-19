@@ -36,10 +36,10 @@ using (var serviceScope = serviceProvider.CreateScope())
 {
     var emailSender = serviceScope.ServiceProvider.GetRequiredService<IEmailSender>();
 
-    await SendPlainTextEmailAsync(emailSender);
-    await SendHtmlEmailAsync(emailSender);
-    await SendForcedToEmailAsync(emailSender);
-    await SendAttachmentsEmailAsync(emailSender);
+    var correlationId1 = await SendPlainTextEmailAsync(emailSender);
+    var correlationId2 = await SendHtmlEmailAsync(emailSender);
+    var correlationId3 = await SendForcedToEmailAsync(emailSender);
+    var correlationId4 = await SendAttachmentsEmailAsync(emailSender);
     await SendMultipleEmailsAsync(emailSender);
 }
 
@@ -57,7 +57,7 @@ static async Task SendMultipleEmailsAsync(IEmailSender emailSender, Cancellation
     }
 }
 
-static async Task SendPlainTextEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+static Task<string?> SendPlainTextEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
 {
     var mail = new MailMessage(_defaultFromEmail, _defaultToEmail)
     {
@@ -66,10 +66,10 @@ static async Task SendPlainTextEmailAsync(IEmailSender emailSender, Cancellation
         IsBodyHtml = true
     };
 
-    await emailSender.SendEmailAsync(mail, ct);
+    return emailSender.SendEmailAsync(mail, ct);
 }
 
-static async Task SendHtmlEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+static Task<string?> SendHtmlEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
 {
     var mail = new MailMessage(_defaultFromEmail, _defaultToEmail)
     {
@@ -78,10 +78,10 @@ static async Task SendHtmlEmailAsync(IEmailSender emailSender, CancellationToken
         IsBodyHtml = true
     };
 
-    await emailSender.SendEmailAsync(mail, ct);
+    return emailSender.SendEmailAsync(mail, ct);
 }
 
-static async Task SendForcedToEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+static Task<string?> SendForcedToEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
 {
     var mail = new MailMessage(_defaultFromEmail, "unknown.address@nowhere.com")
     {
@@ -90,10 +90,10 @@ static async Task SendForcedToEmailAsync(IEmailSender emailSender, CancellationT
         IsBodyHtml = true
     };
 
-    await emailSender.SendEmailAsync(mail, ct);
+    return emailSender.SendEmailAsync(mail, ct);
 }
 
-static async Task SendAttachmentsEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
+static Task<string?> SendAttachmentsEmailAsync(IEmailSender emailSender, CancellationToken ct = default)
 {
     var mail = new MailMessage(_defaultFromEmail, _defaultToEmail)
     {
@@ -104,5 +104,5 @@ static async Task SendAttachmentsEmailAsync(IEmailSender emailSender, Cancellati
 
     mail.Attachments.Add(new Attachment("Attachments/attachment.png", "image/png"));
 
-    await emailSender.SendEmailAsync(mail, ct);
+    return emailSender.SendEmailAsync(mail, ct);
 }
