@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,35 +13,29 @@ namespace OneBeyond.Studio.EmailProviders.SendGrid;
 
 internal sealed class EmailSender : IEmailSender
 {
-    private readonly string _fromEmail;
-    private readonly string _fromEmailName;
+    private readonly EmailAddress _defaultSender;
     private readonly string _sendGridApiKey;
     private readonly string? _enforcedToEmailAddress;
 
-    /// <summary>Create an object to Handle Sending e-mail using Sendgrid service</summary>
-    /// <param name="sendGridApiKey"></param>
-    /// <param name="fromEmail"></param>
-    /// <param name="fromEmailName"></param>
     public EmailSender(
         string sendGridApiKey,
         string fromEmail,
-        string fromEmailName,
+        string? fromEmailName,
         string? enforcedToEmailAddress)
     {
 
         EnsureArg.IsNotNullOrWhiteSpace(sendGridApiKey, nameof(sendGridApiKey));
         EnsureArg.IsNotNullOrWhiteSpace(fromEmail, nameof(fromEmail));
-        EnsureArg.IsNotNullOrWhiteSpace(fromEmailName, nameof(fromEmailName));
 
         _sendGridApiKey = sendGridApiKey;
-        _fromEmail = fromEmail;
-        _fromEmailName = fromEmailName;
+        _defaultSender = new EmailAddress(fromEmail, fromEmailName);
         _enforcedToEmailAddress = enforcedToEmailAddress;
     }
 
     public async Task SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
-        EnsureArg.IsNotNull(mailMessage);
+        EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
+
         if (mailMessage.ReplyToList.Count > 1)
         {
             throw new EmailSenderException("SendGrid does not support more than one replyTo address.");
@@ -53,50 +49,34 @@ internal sealed class EmailSender : IEmailSender
         //map mail message to send grid message
         var sendGridMessage = new SendGridMessage()
         {
-            From = new EmailAddress(_fromEmail, _fromEmailName)
+            From = GetSender(mailMessage.From, _defaultSender)
         };
 
-        if (mailMessage.From != null)
+        foreach (var to in GetRecipients(mailMessage.To, _enforcedToEmailAddress))
         {
-            sendGridMessage.From = new EmailAddress(
-                mailMessage.From.Address, mailMessage.From.DisplayName);
-        }
-
-        if (!string.IsNullOrEmpty(_enforcedToEmailAddress))
-        {
-            mailMessage.To.Clear();
-            sendGridMessage.AddTo(new EmailAddress(_enforcedToEmailAddress));
-        }
-
-        foreach (var to in mailMessage.To)
-        {
-            sendGridMessage.AddTo(new EmailAddress(
-                to.Address, to.DisplayName));
+            sendGridMessage.AddTo(to);
         }
 
         foreach (var cc in mailMessage.CC)
         {
-            //SendGrid does not allow CC to contain To addresses 
-            if (!mailMessage.To.Contains(cc))
+            if (!mailMessage.To.Contains(cc)) //SendGrid does not allow CC to contain To addresses 
             {
-                sendGridMessage.AddCc(new EmailAddress(
-                    cc.Address, cc.DisplayName));
+                sendGridMessage.AddCc(cc.ToEmailAddress());
             }
         }
 
         foreach (var bcc in mailMessage.Bcc)
         {
-            //SendGrid does not allow CC to contain To addresses 
-            if (!mailMessage.To.Contains(bcc))
+            if (!mailMessage.To.Contains(bcc)) //SendGrid does not allow CC to contain To addresses 
+
             {
-                sendGridMessage.AddBcc(new EmailAddress(
-                    bcc.Address, bcc.DisplayName));
+                sendGridMessage.AddBcc(bcc.ToEmailAddress());
             }
         }
 
         foreach (var replyTo in mailMessage.ReplyToList)
         {
-            sendGridMessage.ReplyTo = new EmailAddress(replyTo.Address, replyTo.DisplayName);
+            sendGridMessage.ReplyTo = replyTo.ToEmailAddress();
         }
 
         sendGridMessage.AddHeader("Priority", mailMessage.Priority.ToString());
@@ -130,6 +110,16 @@ internal sealed class EmailSender : IEmailSender
 
         await SendEmailMessageAsync(sendGridMessage, cancellationToken);
     }
+
+    private static EmailAddress GetSender(MailAddress? sender, EmailAddress defaultSender)
+        => sender is { }
+            ? sender.ToEmailAddress()
+            : defaultSender;
+
+    private static List<EmailAddress> GetRecipients(MailAddressCollection recipients, string? enforcedToEmailAddress)
+        => string.IsNullOrEmpty(enforcedToEmailAddress)
+            ? recipients.Select(recipient => recipient.ToEmailAddress()).ToList()
+            : new List<EmailAddress> { new EmailAddress(enforcedToEmailAddress!) };
 
     private Task SendEmailMessageAsync(SendGridMessage sendGridMessage, CancellationToken cancellationToken)
     {

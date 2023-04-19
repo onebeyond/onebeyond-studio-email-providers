@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(@this, nameof(@this));
 
         @this.AddSingleton<IEmailSender>(
-            (sp) =>
+            (_) =>
             {
                 return new EmailSender(
                         exchangeVersion,

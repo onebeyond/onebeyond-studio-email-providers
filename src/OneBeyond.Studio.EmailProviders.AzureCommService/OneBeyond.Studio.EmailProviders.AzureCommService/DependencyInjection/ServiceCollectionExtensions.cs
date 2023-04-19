@@ -2,32 +2,25 @@ using System;
 using EnsureThat;
 using Microsoft.Extensions.DependencyInjection;
 using OneBeyond.Studio.EmailProviders.Domain;
-using OneBeyond.Studio.EmailProviders.SendGrid.Options;
+using OneBeyond.Studio.EmailProviders.AzureCommService.Options;
+using Microsoft.Extensions.Logging;
 
-namespace OneBeyond.Studio.EmailProviders.SendGrid.DependencyInjection;
+namespace OneBeyond.Studio.EmailProviders.AzureCommService.DependencyInjection;
 
-/// <summary>
-/// </summary>
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Configures email sending capabilities on DI container.
-    /// </summary>
-    /// <param name="this"></param>
-    /// <param name="emailSenderOptions">Email sending configuration options</param>
-    /// <returns></returns>
     public static IServiceCollection AddEmailSender(this IServiceCollection @this, EmailSenderOptions emailSenderOptions)
     {
         EnsureArg.IsNotNull(@this, nameof(@this));
         EnsureArg.IsNotNull(emailSenderOptions, nameof(emailSenderOptions));
 
         @this.AddSingleton(
-            (_) =>
+            (serviceProvider) =>
             {
                 return new EmailSender(
-                        emailSenderOptions.Key!,
+                        serviceProvider.GetRequiredService<ILoggerFactory>(),
+                        emailSenderOptions.CommunicationServiceConnectionString,
                         emailSenderOptions.FromEmailAddress!,
-                        emailSenderOptions.FromEmailName!,
                         emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null) as IEmailSender;
             });
         return @this;
