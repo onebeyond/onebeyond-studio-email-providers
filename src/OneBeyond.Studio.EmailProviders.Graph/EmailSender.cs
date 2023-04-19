@@ -85,7 +85,7 @@ internal sealed class EmailSender : IEmailSender
                     new SendMailPostRequestBody 
                     { 
                         Message = message, 
-                        SaveToSentItems = false 
+                        SaveToSentItems = false
                     }, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
         }
