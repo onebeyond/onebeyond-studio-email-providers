@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
                         emailSenderOptions.FromEmailAddress!,
                         emailSenderOptions.FromEmailName!,
                         emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null,
-                        emailSenderOptions.UseSandBoxMode) as IEmailSender;
+                        emailSenderOptions.UseSandboxMode) as IEmailSender;
             });
         return @this;
     }

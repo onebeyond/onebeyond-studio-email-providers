@@ -12,5 +12,5 @@ public sealed record EmailSenderOptions : Domain.Options.EmailSenderOptions
     /// <summary>
     /// In Sendbox mode Sendgrid does not actually send e-mails (in case if you need to test mass e-mails sending campaign)
     /// </summary>
-    public bool UseSandBoxMode { get; init; }
+    public bool UseSandboxMode { get; init; }
 }

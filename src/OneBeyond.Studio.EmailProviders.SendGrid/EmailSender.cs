@@ -16,14 +16,14 @@ internal sealed class EmailSender : IEmailSender
     private readonly EmailAddress _defaultSender;
     private readonly string _sendGridApiKey;
     private readonly string? _enforcedToEmailAddress;
-    private readonly bool _useSandBoxMode;
+    private readonly bool _useSandboxMode;
 
     public EmailSender(
         string sendGridApiKey,
         string fromEmail,
         string? fromEmailName,
         string? enforcedToEmailAddress,
-        bool useSandBoxMode)
+        bool useSandboxMode)
     {
 
         EnsureArg.IsNotNullOrWhiteSpace(sendGridApiKey, nameof(sendGridApiKey));
@@ -32,7 +32,7 @@ internal sealed class EmailSender : IEmailSender
         _sendGridApiKey = sendGridApiKey;
         _defaultSender = new EmailAddress(fromEmail, fromEmailName);
         _enforcedToEmailAddress = enforcedToEmailAddress;
-        _useSandBoxMode = useSandBoxMode;
+        _useSandboxMode = useSandboxMode;
     }
 
     public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
@@ -53,7 +53,7 @@ internal sealed class EmailSender : IEmailSender
         var sendGridMessage = new SendGridMessage()
         {
             From = GetSender(mailMessage.From, _defaultSender),
-            MailSettings = new MailSettings { SandboxMode = new SandboxMode { Enable = _useSandBoxMode } }
+            MailSettings = new MailSettings { SandboxMode = new SandboxMode { Enable = _useSandboxMode } }
         };
 
         foreach (var to in GetRecipients(mailMessage.To, _enforcedToEmailAddress))
