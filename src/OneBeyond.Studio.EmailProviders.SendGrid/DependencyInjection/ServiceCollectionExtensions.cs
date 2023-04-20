@@ -1,4 +1,3 @@
-using System;
 using EnsureThat;
 using Microsoft.Extensions.DependencyInjection;
 using OneBeyond.Studio.EmailProviders.Domain;
@@ -28,7 +27,8 @@ public static class ServiceCollectionExtensions
                         emailSenderOptions.Key!,
                         emailSenderOptions.FromEmailAddress!,
                         emailSenderOptions.FromEmailName!,
-                        emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null) as IEmailSender;
+                        emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null,
+                        emailSenderOptions.UseSandBoxMode) as IEmailSender;
             });
         return @this;
     }

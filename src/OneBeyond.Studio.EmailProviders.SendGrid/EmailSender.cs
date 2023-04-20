@@ -16,12 +16,14 @@ internal sealed class EmailSender : IEmailSender
     private readonly EmailAddress _defaultSender;
     private readonly string _sendGridApiKey;
     private readonly string? _enforcedToEmailAddress;
+    private readonly bool _useSandBoxMode;
 
     public EmailSender(
         string sendGridApiKey,
         string fromEmail,
         string? fromEmailName,
-        string? enforcedToEmailAddress)
+        string? enforcedToEmailAddress,
+        bool useSandBoxMode)
     {
 
         EnsureArg.IsNotNullOrWhiteSpace(sendGridApiKey, nameof(sendGridApiKey));
@@ -30,6 +32,7 @@ internal sealed class EmailSender : IEmailSender
         _sendGridApiKey = sendGridApiKey;
         _defaultSender = new EmailAddress(fromEmail, fromEmailName);
         _enforcedToEmailAddress = enforcedToEmailAddress;
+        _useSandBoxMode = useSandBoxMode;
     }
 
     public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
@@ -49,7 +52,8 @@ internal sealed class EmailSender : IEmailSender
         //map mail message to send grid message
         var sendGridMessage = new SendGridMessage()
         {
-            From = GetSender(mailMessage.From, _defaultSender)
+            From = GetSender(mailMessage.From, _defaultSender),
+            MailSettings = new MailSettings { SandboxMode = new SandboxMode { Enable = _useSandBoxMode } }
         };
 
         foreach (var to in GetRecipients(mailMessage.To, _enforcedToEmailAddress))
@@ -115,7 +119,20 @@ internal sealed class EmailSender : IEmailSender
     {
         var client = new SendGridClient(_sendGridApiKey);
         var response = await client.SendEmailAsync(sendGridMessage, cancellationToken);
-        return response.Headers.GetValues("X-Message-Id").FirstOrDefault();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.DeserializeResponseBodyAsync();
+            var errorMessage = body.ContainsKey("errors")
+                ? body["errors"].ToString()
+                : "Failed to send message";
+            throw new EmailSenderException(errorMessage);
+        }
+
+        response.Headers.TryGetValues("X-Message-Id", out var values);
+
+        return values?.FirstOrDefault();
+
     }
 
     private static EmailAddress GetSender(MailAddress? sender, EmailAddress defaultSender)
