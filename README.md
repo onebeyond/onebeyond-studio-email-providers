@@ -4,7 +4,8 @@
   </a>
 </p>
 
-# One Beyond Studion Email Providers Dependencies
+# One Beyond Studio Email Providers Dependencies
+
 ```mermaid
  graph BT;
  B1[EmailProviders.AzureCommService] --> A1[EmailProviders.Domain];
