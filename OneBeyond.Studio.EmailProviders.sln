@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\Directory.Build.targets = src\Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.AzureCommService", "src\OneBeyond.Studio.EmailProviders.AzureCommService\OneBeyond.Studio.EmailProviders.AzureCommService\OneBeyond.Studio.EmailProviders.AzureCommService.csproj", "{1DE9164C-9781-4D52-938B-FAE33A0B0D30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.AzureCommService", "src\OneBeyond.Studio.EmailProviders.AzureCommService\OneBeyond.Studio.EmailProviders.AzureCommService.csproj", "{1DE9164C-9781-4D52-938B-FAE33A0B0D30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.AzureCommService.Tests", "src\OneBeyond.Studio.EmailProviders.AzureCommService.Tests\OneBeyond.Studio.EmailProviders.AzureCommService.Tests.csproj", "{71AA4867-D8EF-4C81-B7AC-072D1145FE43}"
 EndProject
