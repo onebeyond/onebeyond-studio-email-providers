@@ -9,4 +9,8 @@ public sealed record EmailSenderOptions : Domain.Options.EmailSenderOptions
     /// Specifies SendGrid API auth key to be used for SendGrid delievry method.
     /// </summary>
     public string? Key { get; init; }
+    /// <summary>
+    /// In Sendbox mode Sendgrid does not actually send e-mails (in case if you need to test mass e-mails sending campaign)
+    /// </summary>
+    public bool UseSandboxMode { get; init; }
 }

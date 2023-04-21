@@ -1,14 +1,13 @@
-using System.Net.Mail;
-using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OneBeyond.Studio.EmailProviders.AzureCommService.DependencyInjection;
 using OneBeyond.Studio.EmailProviders.Domain;
-using AzureCommService = OneBeyond.Studio.EmailProviders.AzureCommService;
+using OneBeyond.Studio.EmailProviders.SendGrid.Options;
+using OneBeyond.Studio.EmailProviders.SendGrid.DependencyInjection;
+using System.Net.Mail;
 
-//FromEmail must be declared in Azure portal -> Email Communication Service -> Email Communication Services Domain -> MailFrom addresses
-const string _defaultFromEmail = "<ADD-MAIL-FROM-ASDDRESS-FROM-COMM-SERVICES>";
+const string _defaultFromEmail = "<ADD-VERIFIED-EMAIL>";
 const string _defaultToEmail = "<ADD-EMAIL>";
 
 var configuration = new ConfigurationBuilder()
@@ -19,10 +18,10 @@ var serviceCollection = new ServiceCollection();
 
 serviceCollection.AddLogging();
 
-var section = configuration.GetSection("EmailSender:AzureCommService")
-    ?? throw new Exception($"Unable to find section EmailSender:AzureCommService");
+var section = configuration.GetSection("EmailSender:SendGrid")
+    ?? throw new Exception($"Unable to find section EmailSender:SendGrid");
 
-var options = section.Get<AzureCommService.Options.EmailSenderOptions>();
+var options = section.Get<EmailSenderOptions>();
 
 serviceCollection.AddEmailSender(options!);
 
