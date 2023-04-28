@@ -1,18 +1,47 @@
-<p align="center">
+<p>
   <a href="https://one-beyond.com">
-    <img src="Logo.png" width="700" alt="One Beyond" />
+    <img src="Logo.png" width="300" alt="One Beyond" />
   </a>
 </p>
 
-# One Beyond Studio Email Providers Dependencies
+[![Nuget version](https://img.shields.io/nuget/v/OneBeyond.Studio.EmailProviders.Domain?style=plastic)](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Domain)
+[![Nuget downloads](https://img.shields.io/nuget/dt/OneBeyond.Studio.EmailProviders.Domain?style=plastic)](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Domain)
+[![License](https://img.shields.io/github/license/OneBeyond/
+onebeyond-studio-email-providers?style=plastic)](LICENSE)
 
-```mermaid
- graph BT;
- B1[EmailProviders.AzureCommService] --> A1[EmailProviders.Domain];
- C1[EmailProviders.Exchange] --> A1[EmailProviders.Domain];
- D1[EmailProviders.Folder] --> A1[EmailProviders.Domain];
- E1[EmailProviders.Graph] --> A1[EmailProviders.Domain];
- F1[EmailProviders.Office365] --> A1[EmailProviders.Domain];
- G1[EmailProviders.SendGrid] --> A1[EmailProviders.Domain];
- H1[EmailProviders.Smtp] --> A1[EmailProviders.Domain];
-```
+# Introduction
+On Beyond Studio Email Providers is a set of .NET libraries that helps you to abstract send e-mail logic in your application.
+At this moment, we support the following types of e-mail providers:
+- [Folder](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Folder)
+- [SendGrid](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.SendGrid)
+- [SMTP](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Smtp)
+- [Graph](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Graph)
+- [Office365](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Office365)
+- [Exchange](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Exchange)
+
+### Supported .NET version:
+
+7.0
+
+### Installation
+
+The library that contains IEmailSender abstraction:
+
+`dotnet new install OneBeyond.Studio.EmailProviders.Domain`
+
+Libraries that contain particular implementation of IEmailSender (depending on your needs):
+
+`dotnet new install OneBeyond.Studio.EmailProviders.Folder`
+`dotnet new install OneBeyond.Studio.EmailProviders.SendGrid`
+`dotnet new install OneBeyond.Studio.EmailProviders.Smtp`
+`dotnet new install OneBeyond.Studio.EmailProviders.Graph`
+`dotnet new install OneBeyond.Studio.EmailProviders.Office365`
+`dotnet new install OneBeyond.Studio.EmailProviders.Exchange`
+
+### Documentation
+
+For more detailed documentation, please refer to our [Wiki](https://github.com/onebeyond/onebeyond-studio-email-providers/wiki)
+
+### Contributing
+
+If you want to contribute, we are currently accepting PRs and/or proposals/discussions in the issue tracker.
