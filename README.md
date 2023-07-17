@@ -7,6 +7,8 @@
 [![Nuget version](https://img.shields.io/nuget/v/OneBeyond.Studio.EmailProviders.Domain?style=plastic)](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Domain)
 [![Nuget downloads](https://img.shields.io/nuget/dt/OneBeyond.Studio.EmailProviders.Domain?style=plastic)](https://www.nuget.org/packages/OneBeyond.Studio.EmailProviders.Domain)
 [![License](https://img.shields.io/github/license/OneBeyond/onebeyond-studio-email-providers?style=plastic)](LICENSE)
+[![Maintainability](https://api.codeclimate.com/v1/badges/60e9e03f64f5f9368561/maintainability)](https://codeclimate.com/github/onebeyond/onebeyond-studio-email-providers/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/60e9e03f64f5f9368561/test_coverage)](https://codeclimate.com/github/onebeyond/onebeyond-studio-email-providers/test_coverage)
 
 # Introduction
 On Beyond Studio Email Providers is a set of .NET libraries that helps you to abstract send e-mail logic in your application.
