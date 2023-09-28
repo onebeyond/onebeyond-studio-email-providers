@@ -18,8 +18,9 @@ public abstract record EmailSenderOptions
     public bool UseEnforcedToEmailAddress { get; init; }
 
     /// <summary>
-    /// Specificies the email address to send all the emails to, overriding user email.
+    /// Specifies the email addresses to send all the emails to, overriding user email.
     /// <remarks>This setting is used only if <see cref="UseEnforcedToEmailAddress"/> is true</remarks>
+    /// <remarks>This setting now supports a comma delimited list of emails.</remarks>
     /// </summary>
     public string? EnforcedToEmailAddress { get; init; }
 }
