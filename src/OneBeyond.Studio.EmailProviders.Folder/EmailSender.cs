@@ -13,19 +13,19 @@ internal sealed class EmailSender : IEmailSender
     private readonly string _folder;
     private readonly string? _fromEmailAddress;
     private readonly string? _fromEmailName;
-    private readonly string? _enforcedToEmailAddress;
+    private readonly string? _enforcedToEmailAddresses;
 
     public EmailSender(
         string folder,
         string? fromEmailAddress,
         string? fromEmailName,
-        string? enforcedToEmailAddress)
+        string? enforcedToEmailAddresses)
     {
         EnsureArg.IsNotNullOrWhiteSpace(folder, nameof(folder));
         _folder = folder;
         _fromEmailAddress = fromEmailAddress;
         _fromEmailName = fromEmailName;
-        _enforcedToEmailAddress = enforcedToEmailAddress;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
     }
 
     public async Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken)
@@ -37,10 +37,11 @@ internal sealed class EmailSender : IEmailSender
             mailMessage.From = new MailAddress(_fromEmailAddress, _fromEmailName ?? _fromEmailAddress);
         }
 
-        if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddress))
+        if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
-            mailMessage.To.Add(new MailAddress(_enforcedToEmailAddress));
+            // Folder sending allows comma-separated string
+            mailMessage.To.Add(_enforcedToEmailAddresses);
         }
 
         var mimeMessage = (MimeMessage)mailMessage;

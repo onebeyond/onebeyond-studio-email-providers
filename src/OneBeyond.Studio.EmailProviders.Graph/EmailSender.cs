@@ -21,13 +21,15 @@ internal sealed class EmailSender : IEmailSender
     private readonly ILogger _logger;
     private readonly Lazy<GraphServiceClient> _graphServiceClient;
     private readonly string _senderUserAzureId;
+    private readonly string? _enforcedToEmailAddresses;
 
     public EmailSender(
         ILoggerFactory loggerFactory,
         string clientId,
         string tenantId,
         string clientSecret,
-        string senderUserAzureId)
+        string senderUserAzureId,
+        string? enforcedToEmailAddresses)
     {
         EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
         EnsureArg.IsNotNullOrWhiteSpace(clientId, nameof(clientId));
@@ -49,6 +51,7 @@ internal sealed class EmailSender : IEmailSender
         });
 
         _senderUserAzureId = senderUserAzureId;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
     }
 
     //Note! If you use this provider, please make sure the application registration you're using
@@ -131,14 +134,24 @@ internal sealed class EmailSender : IEmailSender
         return attachmentsList;
     }
 
-    private static List<Recipient> GetRecipientsList(MailAddressCollection mailAddresses)
-        => mailAddresses.Select(recipient =>
+    private List<Recipient> GetRecipientsList(MailAddressCollection mailAddresses)
+        => string.IsNullOrWhiteSpace(_enforcedToEmailAddresses) 
+        ? mailAddresses.Select(recipient =>
                     new Recipient
                     {
                         EmailAddress = new EmailAddress
                         {
                             Address = recipient.Address,
                             Name = recipient.DisplayName
+                        }
+                    }).ToList() :
+        _enforcedToEmailAddresses.Split(',', System.StringSplitOptions.RemoveEmptyEntries).Select(x =>
+                    new Recipient 
+                    {
+                        EmailAddress = new EmailAddress
+                        {
+                            Address = x,
+                            Name = x.Split('@')[0]
                         }
                     }).ToList();
 }

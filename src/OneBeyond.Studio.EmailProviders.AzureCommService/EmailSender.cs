@@ -1,4 +1,5 @@
 using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
 using Azure.Communication.Email;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,7 @@ namespace OneBeyond.Studio.EmailProviders.AzureCommService;
 internal sealed class EmailSender : IEmailSender
 {
     private readonly string _defaultFromAddress;
-    private readonly string? _enforcedToEmailAddress;
+    private readonly string? _enforcedToEmailAddresses;
     private readonly EmailClient _emailClient;
     private readonly Azure.WaitUntil _waitUntil;
 
@@ -18,14 +19,14 @@ internal sealed class EmailSender : IEmailSender
     public EmailSender(
         string connectionString,
         string defaultFromAddress,
-        string? enforcedToEmailAddress,
+        string? enforcedToEmailAddresses,
         bool doNotWaitTillOperationCompleted)
     {
         EnsureArg.IsNotNullOrWhiteSpace(connectionString, nameof(connectionString));
         EnsureArg.IsNotNullOrWhiteSpace(defaultFromAddress, nameof(defaultFromAddress));
 
         _defaultFromAddress = defaultFromAddress;
-        _enforcedToEmailAddress = enforcedToEmailAddress;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
         _emailClient = new EmailClient(connectionString);
         _waitUntil = doNotWaitTillOperationCompleted ? Azure.WaitUntil.Started : Azure.WaitUntil.Completed;
     }
@@ -36,16 +37,25 @@ internal sealed class EmailSender : IEmailSender
 
         var fromAddress = mailMessage.From?.Address ?? _defaultFromAddress;
 
-        var toAddressesList = string.IsNullOrEmpty(_enforcedToEmailAddress)
+        var toAddressesList = string.IsNullOrEmpty(_enforcedToEmailAddresses)
             ? mailMessage.To.Select(x => new EmailAddress(x.Address, x.DisplayName)).ToList()
-            : new List<EmailAddress> { new EmailAddress(_enforcedToEmailAddress) };
+            : _enforcedToEmailAddresses.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => new EmailAddress(x)).ToList();
+        EmailRecipients emailRecipients;
 
-        var ccAddressesList = mailMessage.CC.Select(x => new EmailAddress(x.Address, x.DisplayName)).ToList();
+        if (string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
+        {
+            var ccAddressesList = mailMessage.CC.Select(x => new EmailAddress(x.Address, x.DisplayName)).ToList();
 
-        var bccAddressesList = mailMessage.Bcc.Select(x => new EmailAddress(x.Address, x.DisplayName)).ToList();
-
-        var emailRecipients = new EmailRecipients(toAddressesList, ccAddressesList, bccAddressesList);
-
+            var bccAddressesList = mailMessage.Bcc.Select(x => new EmailAddress(x.Address, x.DisplayName)).ToList();
+            
+            emailRecipients = new EmailRecipients(toAddressesList, ccAddressesList, bccAddressesList);
+        }
+        else
+        {
+            emailRecipients= new EmailRecipients(toAddressesList);
+        }
+        
         var emailContent = new EmailContent(mailMessage.Subject);
 
         if (mailMessage.IsBodyHtml)
