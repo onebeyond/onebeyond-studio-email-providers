@@ -24,7 +24,7 @@ internal sealed class EmailSender : IEmailSender, IDisposable
     private readonly string? _password;
     private readonly string? _fromEmailAddress;
     private readonly string? _fromEmailName;
-    private readonly string? _enforcedToEmailAddress;
+    private readonly string? _enforcedToEmailAddresses;
     private readonly ConcurrentQueue<(int Id, MailKit.Net.Smtp.SmtpClient Value)> _smtpClients;
     private int _lastSmtpClientId;
     private readonly bool _enableProtocolLogging;
@@ -38,7 +38,7 @@ internal sealed class EmailSender : IEmailSender, IDisposable
         string? password,
         string? fromEmailAddress,
         string? fromEmailName,
-        string? enforcedToEmailAddress,
+        string? enforcedToEmailAddresses,
         bool enableProtocolLogging)
     {
         EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
@@ -60,7 +60,7 @@ internal sealed class EmailSender : IEmailSender, IDisposable
         _password = password;
         _fromEmailAddress = fromEmailAddress;
         _fromEmailName = fromEmailName;
-        _enforcedToEmailAddress = enforcedToEmailAddress;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
         _smtpClients = new ConcurrentQueue<(int Id, MailKit.Net.Smtp.SmtpClient Value)>();
         _lastSmtpClientId = 0;
         _enableProtocolLogging = enableProtocolLogging;
@@ -85,10 +85,11 @@ internal sealed class EmailSender : IEmailSender, IDisposable
             mailMessage.From = new MailAddress(_fromEmailAddress, _fromEmailName ?? _fromEmailAddress);
         }
 
-        if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddress))
+        if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
-            mailMessage.To.Add(new MailAddress(_enforcedToEmailAddress));
+            // SMTP handles comma-separated string.
+            mailMessage.To.Add(_enforcedToEmailAddresses);
         }
 
         var mimeMessage = (MimeMessage)mailMessage;

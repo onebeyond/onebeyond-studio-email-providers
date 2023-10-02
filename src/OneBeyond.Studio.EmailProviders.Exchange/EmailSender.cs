@@ -17,7 +17,7 @@ internal sealed class EmailSender : IEmailSender
     private readonly string _webServiceUrl;
     private readonly string _fromEmail;
     private readonly string _fromEmailName;
-    private readonly string? _enforcedToEmailAddress;
+    private readonly string? _enforcedToEmailAddresses;
     private readonly bool _saveCopy;
     private readonly string? _saveCopyFolderId;
 
@@ -29,7 +29,7 @@ internal sealed class EmailSender : IEmailSender
         string webServiceUrl,
         string fromEmail,
         string fromEmailName,
-        string? enforcedToEmailAddress,
+        string? enforcedToEmailAddresses,
         bool saveCopy,
         string? saveCopyFolderId)
     {
@@ -51,7 +51,7 @@ internal sealed class EmailSender : IEmailSender
         _webServiceUrl = webServiceUrl;
         _fromEmail = fromEmail;
         _fromEmailName = fromEmailName;
-        _enforcedToEmailAddress = enforcedToEmailAddress;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
         _saveCopy = saveCopy;
         _saveCopyFolderId = saveCopyFolderId;
     }
@@ -65,10 +65,11 @@ internal sealed class EmailSender : IEmailSender
             throw new EmailSenderException("AlternativeViews are not supported by Exchange (EWS).");
         }
 
-        if (!string.IsNullOrEmpty(_enforcedToEmailAddress))
+        if (!string.IsNullOrEmpty(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
-            mailMessage.To.Add(new MailAddress(_enforcedToEmailAddress));
+            // Exchange handles inserting a comma-separated string.
+            mailMessage.To.Add(_enforcedToEmailAddresses);
         }
 
         //map Net MailMessage to EWS EmailMessage

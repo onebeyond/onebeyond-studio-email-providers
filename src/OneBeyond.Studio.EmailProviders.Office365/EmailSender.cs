@@ -17,7 +17,7 @@ internal sealed class EmailSender : IEmailSender
     private readonly string _password;
     private readonly string _fromEmail;
     private readonly string _fromEmailName;
-    private readonly string? _enforcedToEmailAddress;
+    private readonly string? _enforcedToEmailAddresses;
     private readonly string _deliveryMethod;
     private readonly bool _saveCopy;
     private readonly string? _saveCopyFolderId;
@@ -32,7 +32,7 @@ internal sealed class EmailSender : IEmailSender
         string password,
         string fromEmail,
         string fromEmailName,
-        string? enforcedToEmailAddress,
+        string? enforcedToEmailAddresses,
         string deliveryMethod,
         bool saveCopy,
         string? saveCopyFolderId,
@@ -59,7 +59,7 @@ internal sealed class EmailSender : IEmailSender
         _password = password;
         _fromEmail = fromEmail;
         _fromEmailName = fromEmailName;
-        _enforcedToEmailAddress = enforcedToEmailAddress;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
         _deliveryMethod = deliveryMethod;
         _saveCopy = saveCopy;
         _saveCopyFolderId = saveCopyFolderId;
@@ -72,10 +72,11 @@ internal sealed class EmailSender : IEmailSender
     {
         EnsureArg.IsNotNull(mailMessage);
 
-        if (!string.IsNullOrEmpty(_enforcedToEmailAddress))
+        if (!string.IsNullOrEmpty(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
-            mailMessage.To.Add(new MailAddress(_enforcedToEmailAddress));
+            // Office365 handles comma separated email list
+            mailMessage.To.Add(_enforcedToEmailAddresses);
         }
 
         if (_deliveryMethod == DeliveryMethod.Smtp)

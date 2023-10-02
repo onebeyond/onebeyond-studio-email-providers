@@ -29,7 +29,8 @@ public static class ServiceCollectionExtensions
                     emailSenderOptions.ClientId!,
                     emailSenderOptions.TenantId!,
                     emailSenderOptions.Secret!,
-                    emailSenderOptions.SenderUserAzureId!
+                    emailSenderOptions.SenderUserAzureId!,
+                    emailSenderOptions.UseEnforcedToEmailAddress ? emailSenderOptions.EnforcedToEmailAddress : null
                     ) as IEmailSender;
             });
         return @this;

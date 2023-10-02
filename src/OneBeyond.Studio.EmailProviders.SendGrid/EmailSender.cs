@@ -15,14 +15,14 @@ internal sealed class EmailSender : IEmailSender
 {
     private readonly EmailAddress _defaultSender;
     private readonly string _sendGridApiKey;
-    private readonly string? _enforcedToEmailAddress;
+    private readonly string? _enforcedToEmailAddresses;
     private readonly bool _useSandboxMode;
 
     public EmailSender(
         string sendGridApiKey,
         string fromEmail,
         string? fromEmailName,
-        string? enforcedToEmailAddress,
+        string? enforcedToEmailAddresses,
         bool useSandboxMode)
     {
 
@@ -31,7 +31,7 @@ internal sealed class EmailSender : IEmailSender
 
         _sendGridApiKey = sendGridApiKey;
         _defaultSender = new EmailAddress(fromEmail, fromEmailName);
-        _enforcedToEmailAddress = enforcedToEmailAddress;
+        _enforcedToEmailAddresses = enforcedToEmailAddresses;
         _useSandboxMode = useSandboxMode;
     }
 
@@ -56,27 +56,30 @@ internal sealed class EmailSender : IEmailSender
             MailSettings = new MailSettings { SandboxMode = new SandboxMode { Enable = _useSandboxMode } }
         };
 
-        foreach (var to in GetRecipients(mailMessage.To, _enforcedToEmailAddress))
+        foreach (var to in GetRecipients(mailMessage.To, _enforcedToEmailAddresses))
         {
             sendGridMessage.AddTo(to);
         }
 
-        foreach (var cc in mailMessage.CC)
+        if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
         {
-            if (!mailMessage.To.Contains(cc)) //SendGrid does not allow CC to contain To addresses 
+            foreach (var cc in mailMessage.CC)
             {
-                sendGridMessage.AddCc(cc.ToEmailAddress());
+                if (!mailMessage.To.Contains(cc)) //SendGrid does not allow CC to contain To addresses 
+                {
+                    sendGridMessage.AddCc(cc.ToEmailAddress());
+                }
             }
-        }
 
-        foreach (var bcc in mailMessage.Bcc)
-        {
-            if (!mailMessage.To.Contains(bcc)) //SendGrid does not allow CC to contain To addresses 
-
+            foreach (var bcc in mailMessage.Bcc)
             {
-                sendGridMessage.AddBcc(bcc.ToEmailAddress());
+                if (!mailMessage.To.Contains(bcc)) //SendGrid does not allow CC to contain To addresses 
+
+                {
+                    sendGridMessage.AddBcc(bcc.ToEmailAddress());
+                }
             }
-        }
+        }        
 
         foreach (var replyTo in mailMessage.ReplyToList)
         {
@@ -143,5 +146,6 @@ internal sealed class EmailSender : IEmailSender
     private static List<EmailAddress> GetRecipients(MailAddressCollection recipients, string? enforcedToEmailAddress)
         => string.IsNullOrEmpty(enforcedToEmailAddress)
             ? recipients.Select(recipient => recipient.ToEmailAddress()).ToList()
-            : new List<EmailAddress> { new EmailAddress(enforcedToEmailAddress!) };
+            : enforcedToEmailAddress.Split(',', System.StringSplitOptions.RemoveEmptyEntries).Select(x => 
+                new EmailAddress(x)).ToList();
 }
