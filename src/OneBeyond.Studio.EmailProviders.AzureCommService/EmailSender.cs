@@ -53,7 +53,7 @@ internal sealed class EmailSender : IEmailSender
         }
         else
         {
-            emailRecipients= new EmailRecipients(toAddressesList);
+            emailRecipients = new EmailRecipients(toAddressesList);
         }
         
         var emailContent = new EmailContent(mailMessage.Subject);
