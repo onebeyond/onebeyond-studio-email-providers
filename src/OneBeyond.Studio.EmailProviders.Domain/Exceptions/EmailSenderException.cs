@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization;
 
 namespace OneBeyond.Studio.EmailProviders.Domain.Exceptions;
 
@@ -29,15 +28,6 @@ public sealed class EmailSenderException : Exception
     /// <param name="innerException"></param>
     public EmailSenderException(string message, Exception innerException)
         : base(message, innerException)
-    {
-    }
-
-    /// <summary>
-    /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
-    private EmailSenderException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
     {
     }
 }
