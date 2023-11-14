@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>OneBeyond.Studio.EmailProviders.Graph</Title>
     <PackageId>OneBeyond.Studio.EmailProviders.Graph</PackageId>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
