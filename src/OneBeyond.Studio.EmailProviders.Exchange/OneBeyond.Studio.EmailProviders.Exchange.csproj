@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>OneBeyond.Studio.EmailProviders.Exchange</Title>
     <PackageId>OneBeyond.Studio.EmailProviders.Exchange</PackageId>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
