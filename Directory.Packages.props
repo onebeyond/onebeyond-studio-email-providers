@@ -20,6 +20,6 @@
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="MimeKitLite" Version="4.3.0" />
     <PackageVersion Include="MinVer" Version="4.3.0" />
-    <PackageVersion Include="SendGrid" Version="9.28.1" />
+    <PackageVersion Include="SendGrid" Version="9.29.1" />
   </ItemGroup>
 </Project>
