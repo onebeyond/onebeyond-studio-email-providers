@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageVersion Include="Azure.Communication.Email" Version="1.0.1" />
     <PackageVersion Include="Azure.Identity" Version="1.10.4" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
