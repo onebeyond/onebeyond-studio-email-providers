@@ -40,6 +40,8 @@ internal sealed class EmailSender : IEmailSender
         if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
+            mailMessage.CC.Clear();
+            mailMessage.Bcc.Clear();
             // Folder sending allows comma-separated string
             mailMessage.To.Add(_enforcedToEmailAddresses);
         }

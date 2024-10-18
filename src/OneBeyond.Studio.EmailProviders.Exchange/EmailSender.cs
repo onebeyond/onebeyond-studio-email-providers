@@ -68,6 +68,9 @@ internal sealed class EmailSender : IEmailSender
         if (!string.IsNullOrEmpty(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
+            mailMessage.CC.Clear();
+            mailMessage.Bcc.Clear();
+            
             // Exchange handles inserting a comma-separated string.
             mailMessage.To.Add(_enforcedToEmailAddresses);
         }
