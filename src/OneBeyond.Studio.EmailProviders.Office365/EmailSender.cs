@@ -75,6 +75,8 @@ internal sealed class EmailSender : IEmailSender
         if (!string.IsNullOrEmpty(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
+            mailMessage.CC.Clear();
+            mailMessage.Bcc.Clear();
             // Office365 handles comma separated email list
             mailMessage.To.Add(_enforcedToEmailAddresses);
         }

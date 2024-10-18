@@ -88,6 +88,9 @@ internal sealed class EmailSender : IEmailSender, IDisposable
         if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
         {
             mailMessage.To.Clear();
+            mailMessage.CC.Clear();
+            mailMessage.Bcc.Clear();
+
             // SMTP handles comma-separated string.
             mailMessage.To.Add(_enforcedToEmailAddresses);
         }

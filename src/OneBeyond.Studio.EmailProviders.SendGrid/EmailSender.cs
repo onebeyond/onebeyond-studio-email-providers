@@ -61,7 +61,7 @@ internal sealed class EmailSender : IEmailSender
             sendGridMessage.AddTo(to);
         }
 
-        if (!string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
+        if (string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
         {
             foreach (var cc in mailMessage.CC)
             {
