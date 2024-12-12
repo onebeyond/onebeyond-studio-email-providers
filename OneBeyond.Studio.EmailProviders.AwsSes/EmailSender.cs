@@ -71,27 +71,27 @@ internal sealed class EmailSender : IEmailSender
         }
         catch (AccountSuspendedException ex)
         {
-            throw new EmailSenderException("The account's ability to send email has been permanently restricted.");
+            throw new EmailSenderException("The account's ability to send email has been permanently restricted.", ex);
         }
         catch (MailFromDomainNotVerifiedException ex)
         {
-            throw new EmailSenderException("The sending domain is not verified.");
+            throw new EmailSenderException("The sending domain is not verified.", ex);
         }
         catch (MessageRejectedException ex)
         {
-            throw new EmailSenderException("The message content is invalid.");
+            throw new EmailSenderException("The message content is invalid.", ex);
         }
         catch (SendingPausedException ex)
         {
-            throw new EmailSenderException("The account's ability to send email is currently paused.");
+            throw new EmailSenderException("The account's ability to send email is currently paused.", ex);
         }
         catch (TooManyRequestsException ex)
         {
-            throw new EmailSenderException("Too many requests were made. Please try again later.");
+            throw new EmailSenderException("Too many requests were made. Please try again later.", ex);
         }
         catch (Exception ex)
         {
-            throw new EmailSenderException($"An error occurred while sending the email");
+            throw new EmailSenderException($"An error occurred while sending the email", ex);
         }
     }
 }
