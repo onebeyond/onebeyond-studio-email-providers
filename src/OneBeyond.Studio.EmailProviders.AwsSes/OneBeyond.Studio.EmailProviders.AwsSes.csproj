@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\OneBeyond.Studio.EmailProviders.Domain\OneBeyond.Studio.EmailProviders.Domain.csproj" />
+    <ProjectReference Include="..\OneBeyond.Studio.EmailProviders.Domain\OneBeyond.Studio.EmailProviders.Domain.csproj" />
   </ItemGroup>
 
 </Project>
