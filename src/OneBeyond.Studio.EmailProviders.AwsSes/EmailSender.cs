@@ -39,10 +39,14 @@ internal sealed class EmailSender : IEmailSender
 
         ser.Destination = new Destination()
         {
-            ToAddresses = toAddressesList,
-            CcAddresses = mailMessage.CC.Select(x => x.Address).ToList(),
-            BccAddresses = mailMessage.Bcc.Select(x => x.Address).ToList()
+            ToAddresses = toAddressesList
         };
+
+        if (string.IsNullOrWhiteSpace(_enforcedToEmailAddress))
+        {
+            ser.Destination.CcAddresses = mailMessage.CC.Select(x => x.Address).ToList();
+            ser.Destination.BccAddresses = mailMessage.Bcc.Select(x => x.Address).ToList();
+        }
 
         var body = new Body();
         if (mailMessage.IsBodyHtml)
