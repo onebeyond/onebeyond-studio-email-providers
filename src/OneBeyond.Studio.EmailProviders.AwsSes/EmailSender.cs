@@ -8,6 +8,11 @@ using System.Net.Mail;
 
 namespace OneBeyond.Studio.EmailProviders.AwsSes;
 
+/// <summary>
+/// Email Sender for Amazon SES (Simple Email Service). This utilises SES V2 
+/// API. Currently we only support SSO/IAM based authentication. This could be 
+/// extended in future to support AWS Access Key/Secret authentication 
+/// </summary>
 internal sealed class EmailSender : IEmailSender
 {
     private readonly AmazonSimpleEmailServiceV2Client _emailClient;
