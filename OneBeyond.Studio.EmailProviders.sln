@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProvi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneBeyond.Studio.EmailProviders.SendGrid.Tests", "src\OneBeyond.Studio.EmailProviders.SendGrid.Tests\OneBeyond.Studio.EmailProviders.SendGrid.Tests.csproj", "{2FB1D7DD-6A61-4377-8C5F-F7FE07D4C729}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneBeyond.Studio.EmailProviders.AwsSes", "src\OneBeyond.Studio.EmailProviders.AwsSes\OneBeyond.Studio.EmailProviders.AwsSes.csproj", "{8C05577B-5225-4C86-9552-B00E3EA88AAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{2FB1D7DD-6A61-4377-8C5F-F7FE07D4C729}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FB1D7DD-6A61-4377-8C5F-F7FE07D4C729}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FB1D7DD-6A61-4377-8C5F-F7FE07D4C729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C05577B-5225-4C86-9552-B00E3EA88AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C05577B-5225-4C86-9552-B00E3EA88AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C05577B-5225-4C86-9552-B00E3EA88AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C05577B-5225-4C86-9552-B00E3EA88AAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
