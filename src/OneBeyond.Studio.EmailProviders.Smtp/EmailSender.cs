@@ -114,7 +114,6 @@ internal sealed class EmailSender : IEmailSender, IDisposable
                 exception,
                 "Unable to send message via SmptClient {SmtpClientId}. Disconnecting the client before releasing it",
                 smtpClient.Id);
-            await smtpClient.Value.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
 
             throw new EmailSenderException("Unable to send message via SmptClient { SmtpClientId }.Disconnecting the client before releasing it.", exception);
         }
@@ -173,12 +172,13 @@ internal sealed class EmailSender : IEmailSender, IDisposable
         (int Id, MailKit.Net.Smtp.SmtpClient Value) smtpClient,
         CancellationToken cancellationToken)
     {
+        await smtpClient.Value.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
+
         // Only SmtpClients created before threshold are returned into the queue for later re-use,
         // all the others get decommissioned. Another option that SmtpClient gets returned regardless its id
         // provided the queue count is less than the threshold.
         if (smtpClient.Id > SmtpClientsMaxCount)
         {
-            await smtpClient.Value.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
             smtpClient.Value.Dispose();
         }
         else
