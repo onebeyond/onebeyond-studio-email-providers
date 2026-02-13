@@ -1,0 +1,19 @@
+﻿<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
+  </Folder>
+  <Project Path="src/OneBeyond.Studio.EmailProviders.AwsSes/OneBeyond.Studio.EmailProviders.AwsSes.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.AzureCommService/OneBeyond.Studio.EmailProviders.AzureCommService.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.AzureCommService.Tests/OneBeyond.Studio.EmailProviders.AzureCommService.Tests.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.Domain/OneBeyond.Studio.EmailProviders.Domain.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.Exchange/OneBeyond.Studio.EmailProviders.Exchange.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.Folder/OneBeyond.Studio.EmailProviders.Folder.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.Graph/OneBeyond.Studio.EmailProviders.Graph.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.Office365/OneBeyond.Studio.EmailProviders.Office365.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.SendGrid/OneBeyond.Studio.EmailProviders.SendGrid.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.SendGrid.Tests/OneBeyond.Studio.EmailProviders.SendGrid.Tests.csproj" />
+  <Project Path="src/OneBeyond.Studio.EmailProviders.Smtp/OneBeyond.Studio.EmailProviders.Smtp.csproj" />
+</Solution>
