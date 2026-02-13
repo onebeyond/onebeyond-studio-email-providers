@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
             (serviceProvider) =>
             {
                 return new EmailSender(
-                    emailSenderOptions.FromEmailAddress,
+                    emailSenderOptions.FromEmailAddress!,
                     emailSenderOptions.UseEnforcedToEmailAddress
                         ? emailSenderOptions.EnforcedToEmailAddress
                         : default
