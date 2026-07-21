@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Mail;
-using System.Threading;
-using System.Threading.Tasks;
 using Azure.Identity;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
@@ -108,7 +102,7 @@ internal sealed class EmailSender : IEmailSender
     {
         if (!attachments.Any())
         {
-            return null;
+            return [];
         }
 
         var attachmentsList = new List<Microsoft.Graph.Models.Attachment>();
