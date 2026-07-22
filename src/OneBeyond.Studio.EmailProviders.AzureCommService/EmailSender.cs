@@ -1,8 +1,6 @@
 using System.Net.Mail;
-using System.Security.Cryptography.X509Certificates;
 using Azure.Communication.Email;
 using EnsureThat;
-using Microsoft.Extensions.Logging;
 using OneBeyond.Studio.EmailProviders.Domain;
 
 namespace OneBeyond.Studio.EmailProviders.AzureCommService;
@@ -54,6 +52,7 @@ internal sealed class EmailSender : IEmailSender
         else
         {
             emailRecipients = new EmailRecipients(toAddressesList);
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
         }
         
         var emailContent = new EmailContent(mailMessage.Subject);

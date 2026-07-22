@@ -1,4 +1,3 @@
-using Amazon.Runtime.Internal;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
 using EnsureThat;
@@ -51,6 +50,10 @@ internal sealed class EmailSender : IEmailSender
         {
             ser.Destination.CcAddresses = mailMessage.CC.Select(x => x.Address).ToList();
             ser.Destination.BccAddresses = mailMessage.Bcc.Select(x => x.Address).ToList();
+        }
+        else
+        {
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
         }
 
         var body = new Body();

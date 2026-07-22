@@ -56,6 +56,8 @@ internal sealed class EmailSender : IEmailSender
     {
         EnsureArg.IsNotNull(mailMessage, nameof(mailMessage));
 
+        var toRecipients = GetRecipientsList(mailMessage.To);        
+
         var message = new Message
         {
             Subject = mailMessage.Subject,
@@ -66,11 +68,19 @@ internal sealed class EmailSender : IEmailSender
                 Content = mailMessage.Body
             },
 
-            ToRecipients = GetRecipientsList(mailMessage.To),
-            BccRecipients = GetRecipientsList(mailMessage.Bcc),
-            CcRecipients = GetRecipientsList(mailMessage.CC),
+            ToRecipients = GetRecipientsList(mailMessage.To),            
             Attachments = GetAttachmentsList(mailMessage.Attachments)
         };
+
+        if (string.IsNullOrWhiteSpace(_enforcedToEmailAddresses))
+        {
+            message.CcRecipients = GetRecipientsList(mailMessage.CC);
+            message.BccRecipients = GetRecipientsList(mailMessage.Bcc);
+        }
+        else
+        {
+            message.Body.Content += mailMessage.GetOriginalRecipientsForBody();
+        }        
 
         try
         {
