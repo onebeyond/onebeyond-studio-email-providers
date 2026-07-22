@@ -1,8 +1,5 @@
-using System;
-using System.IO;
 using System.Net;
 using System.Net.Mail;
-using System.Threading;
 using EnsureThat;
 using Microsoft.Exchange.WebServices.Data;
 using OneBeyond.Studio.EmailProviders.Domain;
@@ -68,7 +65,7 @@ internal sealed class EmailSender : IEmailSender
         _enableSsl = enableSsl;
     }
 
-    public System.Threading.Tasks.Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
+    public Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(mailMessage);
 
@@ -79,6 +76,7 @@ internal sealed class EmailSender : IEmailSender
             mailMessage.Bcc.Clear();
             // Office365 handles comma separated email list
             mailMessage.To.Add(_enforcedToEmailAddresses);
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
         }
 
         if (_deliveryMethod == DeliveryMethod.Smtp)
@@ -94,7 +92,7 @@ internal sealed class EmailSender : IEmailSender
         throw new EmailSenderException($"Delivery Method '{_deliveryMethod}' is not supported.");
     }
 
-    private System.Threading.Tasks.Task<string?> SendEWSMailMessageAsync(MailMessage mailMessage)
+    private Task<string?> SendEWSMailMessageAsync(MailMessage mailMessage)
     {
         if (mailMessage.AlternateViews.Count > 0)
         {
@@ -166,7 +164,7 @@ internal sealed class EmailSender : IEmailSender
         return SendMailMessageAsync(emailMessage);
     }
 
-    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(MailMessage mailMessage, CancellationToken cancellationToken)
+    private async Task<string?> SendMailMessageAsync(MailMessage mailMessage, CancellationToken cancellationToken)
     {
         using (var smtpClient = new SmtpClient()
         {
@@ -182,7 +180,7 @@ internal sealed class EmailSender : IEmailSender
         return null; //We do not support correlation Id for SmtpClient
     }
 
-    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(EmailMessage emailMessage)
+    private async Task<string?> SendMailMessageAsync(EmailMessage emailMessage)
     {
         if (_saveCopy)
         {
@@ -202,8 +200,10 @@ internal sealed class EmailSender : IEmailSender
 
     private EmailMessage CreateExchangeEmail()
     {
-        var exchangeService = new ExchangeService(_exchangeVersion);
-        exchangeService.Credentials = new WebCredentials(_username, _password);
+        var exchangeService = new ExchangeService(_exchangeVersion)
+        {
+            Credentials = new WebCredentials(_username, _password)
+        };
         exchangeService.AutodiscoverUrl(_username, RedirectionUrlValidationCallback);
         return new EmailMessage(exchangeService);
     }

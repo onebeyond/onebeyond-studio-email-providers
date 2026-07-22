@@ -79,7 +79,11 @@ internal sealed class EmailSender : IEmailSender
                     sendGridMessage.AddBcc(bcc.ToEmailAddress());
                 }
             }
-        }        
+        }
+        else
+        {
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
+        }
 
         foreach (var replyTo in mailMessage.ReplyToList)
         {

@@ -89,6 +89,7 @@ internal sealed class EmailSender : IEmailSender, IDisposable
 
             // SMTP handles comma-separated string.
             mailMessage.To.Add(_enforcedToEmailAddresses);
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
         }
 
         var mimeMessage = (MimeMessage)mailMessage;

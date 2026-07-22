@@ -44,6 +44,7 @@ internal sealed class EmailSender : IEmailSender
             mailMessage.Bcc.Clear();
             // Folder sending allows comma-separated string
             mailMessage.To.Add(_enforcedToEmailAddresses);
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
         }
 
         var mimeMessage = (MimeMessage)mailMessage;

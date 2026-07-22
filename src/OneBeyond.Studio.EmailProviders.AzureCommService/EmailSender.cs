@@ -54,6 +54,7 @@ internal sealed class EmailSender : IEmailSender
         else
         {
             emailRecipients = new EmailRecipients(toAddressesList);
+            mailMessage.Body += mailMessage.GetOriginalRecipientsForBody();
         }
         
         var emailContent = new EmailContent(mailMessage.Subject);

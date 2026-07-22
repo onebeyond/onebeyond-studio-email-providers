@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Net.Mail;
-using System.Threading;
 using EnsureThat;
 using Microsoft.Exchange.WebServices.Data;
 using OneBeyond.Studio.EmailProviders.Domain;
@@ -56,7 +53,7 @@ internal sealed class EmailSender : IEmailSender
         _saveCopyFolderId = saveCopyFolderId;
     }
 
-    public System.Threading.Tasks.Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
+    public Task<string?> SendEmailAsync(MailMessage mailMessage, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(mailMessage);
 
@@ -142,13 +139,15 @@ internal sealed class EmailSender : IEmailSender
 
     private EmailMessage CreateExchangeEmail()
     {
-        var exchangeService = new ExchangeService(_exchangeVersion);
-        exchangeService.Credentials = new WebCredentials(_username, _password);
-        exchangeService.Url = new Uri(_webServiceUrl);
+        var exchangeService = new ExchangeService(_exchangeVersion)
+        {
+            Credentials = new WebCredentials(_username, _password),
+            Url = new Uri(_webServiceUrl)
+        };
         return new EmailMessage(exchangeService);
     }
 
-    private async System.Threading.Tasks.Task<string?> SendMailMessageAsync(EmailMessage emailMessage)
+    private async Task<string?> SendMailMessageAsync(EmailMessage emailMessage)
     {
         if (_saveCopy)
         {
