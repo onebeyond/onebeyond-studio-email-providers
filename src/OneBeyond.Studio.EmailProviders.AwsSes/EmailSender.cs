@@ -1,4 +1,3 @@
-using Amazon.Runtime.Internal;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
 using EnsureThat;
