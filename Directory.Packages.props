@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="11.0.2" />
-    <PackageVersion Include="AWSSDK.SimpleEmailV2" Version="4.0.12.10" />
+    <PackageVersion Include="AWSSDK.SimpleEmailV2" Version="4.0.102.1" />
     <PackageVersion Include="Azure.Communication.Email" Version="1.1.0" />
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
