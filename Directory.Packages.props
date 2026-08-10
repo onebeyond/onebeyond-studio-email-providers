@@ -17,7 +17,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Graph" Version="6.2.0" />
+    <PackageVersion Include="Microsoft.Graph" Version="6.5.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.301" />
     <PackageVersion Include="MimeKitLite" Version="4.17.0" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
