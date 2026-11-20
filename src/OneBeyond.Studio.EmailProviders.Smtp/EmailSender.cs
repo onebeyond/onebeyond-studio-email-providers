@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Net.Mail;
 using EnsureThat;
+using MailKit;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using OneBeyond.Studio.EmailProviders.Domain;

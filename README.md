@@ -22,7 +22,7 @@ At this moment, we support the following types of e-mail providers:
 
 ### Supported .NET version:
 
-10.0
+11.0
 
 ### Installation
 

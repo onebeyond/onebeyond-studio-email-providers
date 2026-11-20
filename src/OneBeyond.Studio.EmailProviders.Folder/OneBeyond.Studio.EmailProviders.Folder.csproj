@@ -12,8 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="MimeKitLite" />
+    <PackageReference Include="MimeKit.Core" />
   </ItemGroup>
 
   <ItemGroup>
