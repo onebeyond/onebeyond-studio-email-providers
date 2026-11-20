@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.SimpleEmailV2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

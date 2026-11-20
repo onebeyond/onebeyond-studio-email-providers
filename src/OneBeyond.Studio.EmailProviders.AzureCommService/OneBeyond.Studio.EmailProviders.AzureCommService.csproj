@@ -3,8 +3,6 @@
   <ItemGroup>
     <PackageReference Include="Azure.Communication.Email" />
     <PackageReference Include="Ensure.That" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

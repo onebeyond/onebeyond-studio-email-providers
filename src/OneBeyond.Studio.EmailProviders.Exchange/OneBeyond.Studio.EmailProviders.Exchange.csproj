@@ -13,7 +13,6 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Exchange.WebServices.NETStandard" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="System.Security.Cryptography.Xml" />
   </ItemGroup>
 
