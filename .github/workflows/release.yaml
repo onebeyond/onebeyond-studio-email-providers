@@ -5,6 +5,10 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write   # lets the job get a GitHub OIDC token for NuGet trusted publishing
+
 jobs:
   publish_nugets:
     name: "Publish NuGets"
@@ -34,5 +38,14 @@ jobs:
           --configuration "Release"
           --output "nupkgs"
 
+      - name: "Log in to nuget.org (OIDC)"
+        id: nuget_login
+        uses: NuGet/login@v1
+        with:
+          user: "andrii.kaplanovskyi"   # nuget.org profile name, not email
+
       - name: "Upload NuGets to nuget.org"
-        run: dotnet nuget push "nupkgs/**/*.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "nupkgs/**/*.nupkg"
+          --api-key ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
